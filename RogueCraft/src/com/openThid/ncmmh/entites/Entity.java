@@ -14,8 +14,9 @@ public class Entity {
 	private Level level;
 	private Image image;
 
-	public Entity(Point location) {
+	public Entity(Point location, Level level) {
 		setLocation(location);
+		setLevel(level);
 	}
 
 	public Point getLocation() {
@@ -34,12 +35,37 @@ public class Entity {
 		return level;
 	}
 
+	private boolean canMoveTo(Point p) {
+		return level.isEmpty(p);
+	}
+
+	private boolean canMoveTo(int x, int y) {
+		return level.isEmpty(x, y);
+	}
+
 	public Image getImage() {
 		return image;
 	}
 
 	public void setLocation(Point location) {
 		this.location = location;
+	}
+
+	public boolean safeTranslate(Point p) {
+		p.translate(getLocation());
+		if (canMoveTo(p)) {
+			translate(p);
+			return true;
+		}
+		return false;
+	}
+
+	public boolean safeTranslate(int x, int y) {
+		if (canMoveTo(x+getX(), y+getY())) {
+			translate(x, y);
+			return true;
+		}
+		return false;
 	}
 
 	public void translate(Point p) {

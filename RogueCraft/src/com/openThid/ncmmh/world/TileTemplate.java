@@ -21,7 +21,7 @@ public class TileTemplate {
 	}
 
 	public TileTemplate(String image, String name, MatterType type) {
-		this(ImageUtil.getImage(image), name, type);
+		this(ImageUtil.getImageSafe(image), name, type);
 	}
 
 	public TileTemplate(Image image, String name, MatterType type) {

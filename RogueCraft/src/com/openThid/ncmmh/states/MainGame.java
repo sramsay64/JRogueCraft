@@ -13,7 +13,8 @@ import org.newdawn.slick.command.KeyControl;
 import org.newdawn.slick.state.StateBasedGame;
 
 import com.openThid.ncmmh.Main;
-import com.openThid.ncmmh.entites.Player;
+import com.openThid.ncmmh.entites.LocalPlayer;
+import com.openThid.ncmmh.entites.objects.TestObjectRock;
 import com.openThid.ncmmh.world.Tiles;
 import com.openThid.ncmmh.world.View;
 import com.openThid.ncmmh.world.World;
@@ -21,34 +22,41 @@ import com.openThid.ncmmh.world.World;
 public class MainGame extends SimpleGameState implements InputProviderListener {
 
 	private World world;
-	private LocalPlayer player;
+	private LocalPlayer[] localPlayers;
+
+	private InputProvider provider;
 
 	public MainGame(int id) {
-		this(id, new World());
+		this(id, new World(400, 400), 1);
 	}
 
-	public MainGame(int id, World world) {
+	public MainGame(int id, World world, int players) {
 		super(id);
 		this.world = world;
+		this.localPlayers = new LocalPlayer[players];
 	}
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
 		world.setView(new View(0, 0, gc.getWidth()/Tiles.TILE_WIDTH, gc.getHeight()/Tiles.TILE_HEIGHT));
+		world.addEntity(new TestObjectRock(new Point(4, 5), world.getCurrentLevel()));
+		world.addEntity(new TestObjectRock(new Point(1, 2), world.getCurrentLevel()));
 		
 		Command playerLeft = new BasicCommand("Player Left");
 		Command playerRight = new BasicCommand("Player Right");
 		Command playerUp = new BasicCommand("Player Up");
 		Command playerDown = new BasicCommand("Player Down");
-		InputProvider provider = new InputProvider(gc.getInput());
+		provider = new InputProvider(gc.getInput());
 		provider.addListener(this);
 		provider.bindCommand(new KeyControl(Input.KEY_LEFT), playerLeft);
 		provider.bindCommand(new KeyControl(Input.KEY_RIGHT), playerRight);
 		provider.bindCommand(new KeyControl(Input.KEY_UP), playerUp);
 		provider.bindCommand(new KeyControl(Input.KEY_DOWN), playerDown);
 
-		player = new LocalPlayer(new Point(1, 1), playerLeft, playerRight, playerUp, playerDown);
-		world.addPlayer(player);
+		for (int i = 0; i < localPlayers.length; i++) {
+			localPlayers[i] = new LocalPlayer(new Point(1+i, 1), world.getCurrentLevel(), playerLeft, playerRight, playerUp, playerDown);
+			world.addLocalPlayer(localPlayers[i]);
+		}
 	}
 
 	@Override
@@ -64,36 +72,17 @@ public class MainGame extends SimpleGameState implements InputProviderListener {
 		return world;
 	}
 
-	public class LocalPlayer extends Player {
-		private Command left;
-		private Command right;
-		private Command up;
-		private Command down;
-	
-		public LocalPlayer(Point location, Command left, Command right, Command up, Command down) {
-			super(location);
-			this.left = left;
-			this.right = right;
-			this.up = up;
-			this.down = down;
-		}
-	}
-
 	@Override
 	public void controlPressed(Command command) {
-		Main.main.getLogger().info("Player Command: {}", command);
-		if (command == player.left) {
-			player.getLocation().translate(-1, 0);
-		} else if (command == player.right) {
-			player.getLocation().translate(1, 0);
-		} else if (command == player.up) {
-			player.getLocation().translate(0, -1);
-		} else if (command == player.down) {
-			player.getLocation().translate(0, 1);
+		for (int i = 0; i < localPlayers.length; i++) {
+			localPlayers[i].controlPressed(command);
 		}
 	}
 
 	@Override
 	public void controlReleased(Command command) {
+		for (int i = 0; i < localPlayers.length; i++) {
+			localPlayers[i].controlReleased(command);
+		}
 	}
-}
+}	

@@ -41,7 +41,7 @@ public class Main extends StateBasedGame {
 
 	@Override
 	public void initStatesList(GameContainer gc) throws SlickException {
-		addState(new SplashScreen(SPLASHSCREEN));
+		addState(new SplashScreen(SPLASHSCREEN, MAINGAME, "logos/Logo.png", 2000));
 		addState(new MainGame(MAINGAME));
 	}
 }

@@ -1,14 +1,16 @@
 package com.openThid.ncmmh.world;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.newdawn.slick.Graphics;
 
+import com.openThid.ncmmh.entites.Entity;
+import com.openThid.ncmmh.entites.LocalPlayer;
 import com.openThid.ncmmh.entites.Player;
 
 public class World {
 
-	private ArrayList<Player> players;
 	private View view;
 
 	private int currentLevel;
@@ -16,21 +18,31 @@ public class World {
 	private Level nether;
 	private Level[] underground;
 
-	public World() {
-		players = new ArrayList<>();
-		overworld = new Level(0);
+	private ArrayList<Entity> entities;
+	private ArrayList<Player> players;
+	private ArrayList<LocalPlayer> localPlayers;
+
+	public World(int x, int y) {
+		this(Level.OVERWORLD, new Level(Level.OVERWORLD, x, y), null, null, new ArrayList<Entity>(), new ArrayList<Player>(), new ArrayList<LocalPlayer>());
+		getOverworld().setWorld(this);
 	}
 
-	public Level getOverworld() {
-		return overworld;
+	public World(int currentLevel, Level overworld, Level nether, Level[] underground, ArrayList<Entity> entities, ArrayList<Player> players, ArrayList<LocalPlayer> localPlayers) {
+		this.currentLevel = currentLevel;
+		this.overworld = overworld;
+		this.nether = nether;
+		this.underground = underground;
+		this.entities = entities;
+		this.players = players;
+		this.localPlayers = localPlayers;
 	}
 
-	public Level getNether() {
-		return nether;
+	public View getView() {
+		return view;
 	}
 
-	public Level[] getUnderground() {
-		return underground;
+	public int getCurrentLevelCode() {
+		return currentLevel;
 	}
 
 	public Level getCurrentLevel() {
@@ -46,28 +58,63 @@ public class World {
 		}
 	}
 
-	public ArrayList<Player> getPlayers() {
-		return players;
+	public Level getOverworld() {
+		return overworld;
+	}
+
+	public Level getNether() {
+		return nether;
+	}
+
+	public Level[] getUnderground() {
+		return underground;
 	}
 
 	public Player getPlayer(int id) {
 		return players.get(id);
 	}
 
-	public View getView() {
-		return view;
+	public ArrayList<Entity> getEntities() {
+		return entities;
+	}
+
+	public ArrayList<Player> getPlayers() {
+		return players;
+	}
+
+	public ArrayList<LocalPlayer> getLocalPlayers() {
+		return localPlayers;
+	}
+
+	public void setView(View view) {
+		this.view = view;
 	}
 
 	public void setCurrentLevel(int currentLevel) {
 		this.currentLevel = currentLevel;
 	}
 
-	public void addPlayer(Player player) {
-		players.add(player);
+	public boolean addEntity(Entity e) {
+		return entities.add(e);
 	}
 
-	public void setView(View view) {
-		this.view = view;
+	public boolean addAllEntities(Collection<? extends Entity> entities) {
+		return this.entities.addAll(entities);
+	}
+
+	public boolean addPlayer(Player player) {
+		return players.add(player);
+	}
+
+	public boolean addAllPlayers(Collection<? extends Player> players) {
+		return this.players.addAll(players);
+	}
+	public boolean addLocalPlayer(LocalPlayer player) {
+		return localPlayers.add(player);
+	}
+
+	public boolean addAllLocalPlayers(Collection<? extends LocalPlayer> localPlayers) {
+		return this.localPlayers.addAll(localPlayers);
 	}
 
 	public void render(Graphics g, float xPos, float yPos) {
@@ -80,8 +127,14 @@ public class World {
 
 	public void render(Graphics g, View view, float xPos, float yPos) {
 		getCurrentLevel().render(g, view, xPos, yPos);
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).render(g, view, xPos, yPos);
+		}
 		for (int i = 0; i < players.size(); i++) {
 			players.get(i).render(g, view, xPos, yPos);
+		}
+		for (int i = 0; i < localPlayers.size(); i++) {
+			localPlayers.get(i).render(g, view, xPos, yPos);
 		}
 	}
 }
