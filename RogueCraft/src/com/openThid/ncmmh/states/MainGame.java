@@ -54,7 +54,7 @@ public class MainGame extends SimpleGameState implements InputProviderListener {
 		provider.bindCommand(new KeyControl(Input.KEY_DOWN), playerDown);
 
 		for (int i = 0; i < localPlayers.length; i++) {
-			localPlayers[i] = new LocalPlayer(new Point(1+i, 1), world.getCurrentLevel(), playerLeft, playerRight, playerUp, playerDown);
+			localPlayers[i] = new LocalPlayer(new Point(1+i, 1), world.getCurrentLevel(), "", playerLeft, playerRight, playerUp, playerDown);
 			world.addLocalPlayer(localPlayers[i]);
 		}
 	}

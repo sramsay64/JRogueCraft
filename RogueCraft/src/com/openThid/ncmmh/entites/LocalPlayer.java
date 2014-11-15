@@ -19,8 +19,8 @@ public class LocalPlayer extends Player implements InputProviderListener {
 	 */
 	private int number;
 
-	public LocalPlayer(Point location, Level level, Command left, Command right, Command up, Command down) {
-		super(location, level);
+	public LocalPlayer(Point location, Level level, String nick, Command left, Command right, Command up, Command down) {
+		super(location, level, nick, "localhost");
 		this.left = left;
 		this.right = right;
 		this.up = up;
