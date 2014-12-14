@@ -1,5 +1,7 @@
 package com.openThid.ncmmh.states;
 
+import java.util.Random;
+
 import org.lwjgl.util.Point;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -14,6 +16,7 @@ import org.newdawn.slick.state.StateBasedGame;
 
 import com.openThid.ncmmh.Main;
 import com.openThid.ncmmh.entites.LocalPlayer;
+import com.openThid.ncmmh.entites.ai.Pig;
 import com.openThid.ncmmh.entites.objects.TestObjectRock;
 import com.openThid.ncmmh.world.Tiles;
 import com.openThid.ncmmh.world.View;
@@ -23,17 +26,20 @@ public class MainGame extends SimpleGameState implements InputProviderListener {
 
 	private World world;
 	private LocalPlayer[] localPlayers;
+	private int timePerTick;
+	private int timeLogged;
 
 	private InputProvider provider;
 
 	public MainGame(int id) {
-		this(id, new World(400, 400), 1);
+		this(id, new World(400, 400), 1, 500);
 	}
 
-	public MainGame(int id, World world, int players) {
+	public MainGame(int id, World world, int players, int timePertTick) {
 		super(id);
 		this.world = world;
 		this.localPlayers = new LocalPlayer[players];
+		this.timePerTick = timePertTick;
 	}
 
 	@Override
@@ -41,6 +47,7 @@ public class MainGame extends SimpleGameState implements InputProviderListener {
 		world.setView(new View(0, 0, gc.getWidth()/Tiles.TILE_WIDTH, gc.getHeight()/Tiles.TILE_HEIGHT));
 		world.addEntity(new TestObjectRock(new Point(4, 5), world.getCurrentLevel()));
 		world.addEntity(new TestObjectRock(new Point(1, 2), world.getCurrentLevel()));
+		world.addEntity(new Pig(new Point(10, 7), world.getCurrentLevel(), new Random()));
 		
 		Command playerLeft = new BasicCommand("Player Left");
 		Command playerRight = new BasicCommand("Player Right");
@@ -66,6 +73,12 @@ public class MainGame extends SimpleGameState implements InputProviderListener {
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int deltaTime) throws SlickException {
+		timeLogged += deltaTime;
+		while (timeLogged > timePerTick) {
+			world.update(gc, sbg);
+			Main.main.getLogger().trace("Tick");
+			timeLogged -= timePerTick;
+		}
 	}
 
 	public World getWorld() {

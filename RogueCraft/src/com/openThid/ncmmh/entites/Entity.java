@@ -1,14 +1,16 @@
 package com.openThid.ncmmh.entites;
 
 import org.lwjgl.util.Point;
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.openThid.ncmmh.world.Level;
 import com.openThid.ncmmh.world.Tiles;
 import com.openThid.ncmmh.world.View;
 
-public class Entity {
+public abstract class Entity {
 
 	private Point location;
 	private Level level;
@@ -86,5 +88,8 @@ public class Entity {
 
 	public void render(Graphics g, View view, float xPos, float yPos) {
 		g.drawImage(getImage(), xPos+(getX()*Tiles.TILE_WIDTH), yPos+(getY()*Tiles.TILE_HEIGHT));
+	}
+
+	public void update(GameContainer gc, StateBasedGame sbg) {
 	}
 }

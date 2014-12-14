@@ -3,7 +3,9 @@ package com.openThid.ncmmh.world;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.state.StateBasedGame;
 
 import com.openThid.ncmmh.entites.Entity;
 import com.openThid.ncmmh.entites.LocalPlayer;
@@ -135,6 +137,18 @@ public class World {
 		}
 		for (int i = 0; i < localPlayers.size(); i++) {
 			localPlayers.get(i).render(g, view, xPos, yPos);
+		}
+	}
+
+	public void update(GameContainer gc, StateBasedGame sbg) {
+		for (int i = 0; i < entities.size(); i++) {
+			entities.get(i).update(gc, sbg);
+		}
+		for (int i = 0; i < players.size(); i++) {
+			players.get(i).update(gc, sbg);
+		}
+		for (int i = 0; i < localPlayers.size(); i++) {
+			localPlayers.get(i).update(gc, sbg);
 		}
 	}
 }
